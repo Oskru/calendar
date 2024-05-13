@@ -1,8 +1,6 @@
 import { CalendarEvent } from '../types/CalendarEvent.ts';
-
-interface Props {
-  events: CalendarEvent[];
-}
+import { useEffect, useState } from 'react';
+import { useUser } from '../hooks/use-user.ts';
 
 const weekDaysNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 const weekDays = [1, 2, 3, 4, 5];
@@ -28,9 +26,28 @@ function handleRemoveEvent(event: Omit<CalendarEvent, 'availability'>) {
   });
 }
 
-function Calendar({ events }: Props) {
+function Calendar() {
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const res = await fetch('https://localhost:7162/chosenhour');
+      const data = await res.json();
+      setEvents(data);
+    };
+    fetchEvents();
+  }, []);
+
+  const { user } = useUser();
+  console.log(user);
+
   return (
-    <div>
+    <>
+      <button
+        onClick={() => window.location.replace('/login')}
+        style={{ marginBottom: '50px' }}
+      >
+        Logout
+      </button>
       <table>
         <thead>
           <tr>
@@ -75,7 +92,7 @@ function Calendar({ events }: Props) {
           ))}
         </tbody>
       </table>
-    </div>
+    </>
   );
 }
 
