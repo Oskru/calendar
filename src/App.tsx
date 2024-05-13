@@ -11,7 +11,7 @@ function App() {
       setChosenHours(data);
     };
     fetchChosenHours();
-  });
+  }, []);
 
   return (
     <div className='app'>
